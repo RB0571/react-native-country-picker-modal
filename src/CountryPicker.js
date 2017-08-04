@@ -11,6 +11,7 @@ import {
   StyleSheet,
   View,
   Image,
+  ImageBackground,
   TouchableOpacity,
   Modal,
   Text,
@@ -77,7 +78,7 @@ export default class CountryPicker extends Component {
   static renderEmojiFlag(cca2, emojiStyle) {
     return (
       <Text style={[styles.emojiFlag, emojiStyle]}>
-        { cca2 !== '' && countries[cca2.toUpperCase()] ? <Emoji name={countries[cca2.toUpperCase()].flag} /> : null }
+        {cca2 !== '' && countries[cca2.toUpperCase()] ? <Emoji name={countries[cca2.toUpperCase()].flag} /> : null}
       </Text>
     );
   }
@@ -93,8 +94,8 @@ export default class CountryPicker extends Component {
     return (
       <View style={[styles.itemCountryFlag, itemStyle]}>
         {isEmojiable ?
-            CountryPicker.renderEmojiFlag(cca2, emojiStyle)
-            : CountryPicker.renderImageFlag(cca2, imageStyle)}
+          CountryPicker.renderEmojiFlag(cca2, emojiStyle)
+          : CountryPicker.renderImageFlag(cca2, imageStyle)}
       </View>
     );
   }
@@ -105,17 +106,17 @@ export default class CountryPicker extends Component {
     let countryList = [...props.countryList],
       excludeCountries = [...props.excludeCountries];
 
-    excludeCountries.map((excludeCountry)=>{
+    excludeCountries.map((excludeCountry) => {
       let index = countryList.indexOf(excludeCountry);
 
-      if(index !== -1){
+      if (index !== -1) {
         countryList.splice(index, 1);
       }
     });
 
     // Sort country list
     countryList = countryList
-      .map(c => [c, this.getCountryName(countries[c])])
+      .map(c => [c, this.getCountryNameC(countries[c])])
       .sort((a, b) => {
         if (a[1] < b[1]) return -1;
         if (a[1] > b[1]) return 1;
@@ -196,7 +197,19 @@ export default class CountryPicker extends Component {
 
   getCountryName(country, optionalTranslation) {
     const translation = optionalTranslation || this.props.translation || 'eng';
-    return country.name[translation] || country.name.common;
+    // console.log("CountryPicker translation:", translation)
+    let name = country.name[translation] || country.name.common;
+    if (translation === 'zho') {
+      name = name.substring(1, 100)
+    }
+    return name;
+  }
+
+  getCountryNameC(country, optionalTranslation) {
+    const translation = optionalTranslation || this.props.translation || 'eng';
+    // console.log("CountryPicker translation:", translation)
+    let name = country.name[translation] || country.name.common;
+    return name;
   }
 
   setVisibleListHeight(offset) {
@@ -204,6 +217,13 @@ export default class CountryPicker extends Component {
   }
 
   getLetters(list) {
+    if (this.props.translation === 'zho') {
+      let ret = Object.keys(list.reduce((acc, val) => ({
+        ...acc,
+        [this.getCountryNameC(countries[val]).slice(0, 1).toUpperCase()]: '',
+      }), {})).sort();
+      return ret
+    }
     return Object.keys(list.reduce((acc, val) => ({
       ...acc,
       [this.getCountryName(countries[val]).slice(0, 1).toUpperCase()]: '',
@@ -222,7 +242,7 @@ export default class CountryPicker extends Component {
 
   scrollTo(letter) {
     // find position of first country that starts with letter
-    const index = this.state.cca2List.map((country) => this.getCountryName(countries[country])[0])
+    const index = this.state.cca2List.map((country) => this.getCountryNameC(countries[country])[0])
       .indexOf(letter);
     if (index === -1) {
       return;
@@ -290,7 +310,17 @@ export default class CountryPicker extends Component {
       </View>
     );
   }
-
+  _renderSeperator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    return (
+      <View
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+      />
+    )
+  }
   render() {
     return (
       <View>
@@ -301,7 +331,7 @@ export default class CountryPicker extends Component {
           {
             this.props.children ?
               this.props.children
-            :
+              :
               (<View style={styles.touchFlag}>
                 {CountryPicker.renderFlag(this.props.cca2)}
               </View>)
@@ -311,24 +341,25 @@ export default class CountryPicker extends Component {
           visible={this.state.modalVisible}
           onRequestClose={() => this.setState({ modalVisible: false })}
         >
-          <View style={styles.modalContainer}>
+          <ImageBackground style={styles.modalContainer} source={this.props.backgroundImage}>
             <View style={styles.header}>
               {
                 this.props.closeable &&
-                  <CloseButton
-                    onPress={() => this.onClose()}
-                  />
+                <CloseButton
+                  closeIcon={this.props.closeIcon}
+                  onPress={() => this.onClose()}
+                />
               }
               {
                 this.props.filterable &&
-                  <TextInput
-                    autoFocus={this.props.autoFocusFilter}
-                    autoCorrect={false}
-                    placeholder={this.props.filterPlaceholder}
-                    style={[styles.input, !this.props.closeable && styles.inputOnly]}
-                    onChangeText={this.handleFilterChange}
-                    value={this.state.filter}
-                  />
+                <TextInput
+                  autoFocus={this.props.autoFocusFilter}
+                  autoCorrect={false}
+                  placeholder={this.props.filterPlaceholder}
+                  style={[styles.input, !this.props.closeable && styles.inputOnly]}
+                  onChangeText={this.handleFilterChange}
+                  value={this.state.filter}
+                />
               }
             </View>
             <KeyboardAvoidingView behavior="padding">
@@ -339,6 +370,7 @@ export default class CountryPicker extends Component {
                   ref={listView => this._listView = listView}
                   dataSource={this.state.dataSource}
                   renderRow={country => this.renderCountry(country)}
+                  //renderSeparator={this._renderSeperator.bind(this)}
                   initialListSize={30}
                   pageSize={15}
                   onLayout={
@@ -358,7 +390,7 @@ export default class CountryPicker extends Component {
                 </ScrollView>
               </View>
             </KeyboardAvoidingView>
-          </View>
+          </ImageBackground>
         </Modal>
       </View>
     );

@@ -11,7 +11,7 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
   header: {
     marginTop: Platform.OS === 'ios' ? 16 : 0,
@@ -62,7 +62,7 @@ export default StyleSheet.create({
   itemCountryName: {
     justifyContent: 'center',
     width: getWidthPercent(70),
-    borderBottomWidth: 2 / PixelRatio.get(),
+    borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: '#ccc',
     height: getHeightPercent(7),
   },

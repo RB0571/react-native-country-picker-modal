@@ -30,7 +30,7 @@ const CloseButton = (props) => (
       {...props}
     >
       <Image
-        source={require('./ios7-close-empty.png')}
+        source={props.closeIcon || require('./ios7-close-empty.png')}
         style={styles.closeButtonImage}
       />
     </TouchableOpacity>

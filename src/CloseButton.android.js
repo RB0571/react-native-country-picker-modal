@@ -30,15 +30,15 @@ const CloseButton = (props) => (
     <TouchableNativeFeedback
       background={
         Platform.Version < 21 ?
-        TouchableNativeFeedback.SelectableBackground()
-        :
-        TouchableNativeFeedback.SelectableBackgroundBorderless()
+          TouchableNativeFeedback.SelectableBackground()
+          :
+          TouchableNativeFeedback.SelectableBackgroundBorderless()
       }
       {...props}
     >
       <View>
         <Image
-          source={require('./android-close.png')}
+          source={props.closeIcon || require('./android-close.png')}
           style={styles.closeButtonImage}
         />
       </View>
