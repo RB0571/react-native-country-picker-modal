@@ -37,6 +37,13 @@ export default StyleSheet.create({
     borderColor: '#eee',
     opacity: 0.8,
   },
+  callingCodeText:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 12,
+    backgroundColor: 'transparent',
+    color:'white'
+  },
   emojiFlag: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -60,7 +67,9 @@ export default StyleSheet.create({
     width: getWidthPercent(15),
   },
   itemCountryName: {
-    justifyContent: 'center',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent: 'space-between',
     width: getWidthPercent(70),
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: '#ccc',
@@ -87,5 +96,16 @@ export default StyleSheet.create({
   letterText: {
     textAlign: 'center',
     fontSize: getHeightPercent(2.2),
+  },
+  closeButton: {
+    height: 48,
+    width: getWidthPercent(15),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  closeButtonImage: {
+    height: 24,
+    width: 24,
+    resizeMode: 'contain',
   },
 });

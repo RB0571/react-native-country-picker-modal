@@ -13,6 +13,7 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
+  TouchableNativeFeedback,
   Modal,
   Text,
   TextInput,
@@ -24,7 +25,6 @@ import Fuse from 'fuse.js';
 
 import cca2List from '../data/cca2';
 import { getHeightPercent } from './ratio';
-import CloseButton from './CloseButton';
 import countryPickerStyles from './CountryPicker.style';
 import KeyboardAvoidingView from './KeyboardAvoidingView';
 
@@ -88,6 +88,16 @@ export default class CountryPicker extends Component {
       style={[styles.imgStyle, imageStyle]}
       source={{ uri: countries[cca2].flag }}
     /> : null;
+  }
+
+  static renderCallingCode(cca2) {
+    return (
+      <View style={{alignItems: 'center',justifyContent: 'center', width: 30,height: 30}}> 
+        <Text style={[styles.callingCodeText]}>
+          {cca2 !== '' && "+"+countries[cca2.toUpperCase()].callingCode}
+        </Text>
+      </View>
+    );
   }
 
   static renderFlag(cca2, itemStyle, emojiStyle, imageStyle) {
@@ -271,6 +281,42 @@ export default class CountryPicker extends Component {
     });
   }
 
+  renderCloseButton() {
+    if (Platform.OS === 'ios') {
+      return (
+        <View style={styles.closeButton}>
+          <TouchableOpacity onPress={() => this.onClose()} >
+            <Image
+              source={this.props.closeIcon || require('./ios7-close-empty.png')}
+              style={[styles.closeButtonImage]}
+            />
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.closeButton}>
+          <TouchableNativeFeedback
+            background={
+              Platform.Version < 21 ?
+                TouchableNativeFeedback.SelectableBackground()
+                :
+                TouchableNativeFeedback.SelectableBackgroundBorderless()
+            }
+            onPress={() => this.onClose()}
+          >
+            <View>
+              <Image
+                source={this.props.closeIcon || require('./android-close.png')}
+                style={styles.closeButtonImage}
+              />
+            </View>
+          </TouchableNativeFeedback>
+        </View>
+      )
+    }
+  }
+
   renderCountry(country, index) {
     return (
       <TouchableOpacity
@@ -306,6 +352,9 @@ export default class CountryPicker extends Component {
           <Text style={styles.countryName}>
             {this.getCountryName(country)}
           </Text>
+          <Text style={styles.countryName}>
+            {"+" + country.callingCode}
+          </Text>
         </View>
       </View>
     );
@@ -322,6 +371,7 @@ export default class CountryPicker extends Component {
     )
   }
   render() {
+    console.log("-----------", this.props.cca2)
     return (
       <View>
         <TouchableOpacity
@@ -333,7 +383,7 @@ export default class CountryPicker extends Component {
               this.props.children
               :
               (<View style={styles.touchFlag}>
-                {CountryPicker.renderFlag(this.props.cca2)}
+                {this.props.showCallingCode?CountryPicker.renderCallingCode(this.props.cca2):CountryPicker.renderFlag(this.props.cca2)}
               </View>)
           }
         </TouchableOpacity>
@@ -344,11 +394,7 @@ export default class CountryPicker extends Component {
           <ImageBackground style={styles.modalContainer} source={this.props.backgroundImage}>
             <View style={styles.header}>
               {
-                this.props.closeable &&
-                <CloseButton
-                  closeIcon={this.props.closeIcon}
-                  onPress={() => this.onClose()}
-                />
+                this.props.closeable && this.renderCloseButton()
               }
               {
                 this.props.filterable &&
