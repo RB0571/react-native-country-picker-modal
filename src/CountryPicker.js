@@ -65,6 +65,7 @@ export default class CountryPicker extends Component {
     styles: React.PropTypes.object,
     filterPlaceholder: React.PropTypes.string,
     autoFocusFilter: React.PropTypes.bool,
+    showCallingCode: React.PropTypes.bool,
   }
 
   static defaultProps = {
@@ -73,6 +74,7 @@ export default class CountryPicker extends Component {
     excludeCountries: [],
     filterPlaceholder: 'Filter',
     autoFocusFilter: true,
+    showCallingCode: true,
   }
 
   static renderEmojiFlag(cca2, emojiStyle) {
@@ -92,9 +94,9 @@ export default class CountryPicker extends Component {
 
   static renderCallingCode(cca2) {
     return (
-      <View style={{alignItems: 'center',justifyContent: 'center', width: 30,height: 30}}> 
+      <View style={{ alignItems: 'center', justifyContent: 'center', width: 40, height: 30 }}>
         <Text style={[styles.callingCodeText]}>
-          {cca2 !== '' && "+"+countries[cca2.toUpperCase()].callingCode}
+          {cca2 && cca2 !== '' && "+" + countries[cca2.toUpperCase()].callingCode}
         </Text>
       </View>
     );
@@ -168,6 +170,16 @@ export default class CountryPicker extends Component {
         id: 'id',
       }
     );
+  }
+
+  componentDidMount() {
+    const { cca2 } = this.props
+    this.props.onChange && this.props.onChange({
+      cca2,
+      ...countries[cca2],
+      flag: undefined,
+      name: this.getCountryName(countries[cca2]),
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -383,7 +395,7 @@ export default class CountryPicker extends Component {
               this.props.children
               :
               (<View style={styles.touchFlag}>
-                {this.props.showCallingCode?CountryPicker.renderCallingCode(this.props.cca2):CountryPicker.renderFlag(this.props.cca2)}
+                {this.props.showCallingCode ? CountryPicker.renderCallingCode(this.props.cca2) : CountryPicker.renderFlag(this.props.cca2)}
               </View>)
           }
         </TouchableOpacity>
