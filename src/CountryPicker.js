@@ -22,7 +22,7 @@ import {
   Platform,
 } from 'react-native';
 import Fuse from 'fuse.js';
-
+import PropTypes from 'prop-types';
 import cca2List from '../data/cca2';
 import { getHeightPercent } from './ratio';
 import countryPickerStyles from './CountryPicker.style';
@@ -53,19 +53,19 @@ const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 export default class CountryPicker extends Component {
   static propTypes = {
-    cca2: React.PropTypes.string.isRequired,
-    translation: React.PropTypes.string,
-    onChange: React.PropTypes.func.isRequired,
-    onClose: React.PropTypes.func,
-    closeable: React.PropTypes.bool,
-    filterable: React.PropTypes.bool,
-    children: React.PropTypes.node,
-    countryList: React.PropTypes.array,
-    excludeCountries: React.PropTypes.array,
-    styles: React.PropTypes.object,
-    filterPlaceholder: React.PropTypes.string,
-    autoFocusFilter: React.PropTypes.bool,
-    showCallingCode: React.PropTypes.bool,
+    cca2: PropTypes.string.isRequired,
+    translation: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+    onClose: PropTypes.func,
+    closeable: PropTypes.bool,
+    filterable: PropTypes.bool,
+    children: PropTypes.node,
+    countryList: PropTypes.array,
+    excludeCountries: PropTypes.array,
+    styles: PropTypes.object,
+    filterPlaceholder: PropTypes.string,
+    autoFocusFilter: PropTypes.bool,
+    showCallingCode: PropTypes.bool,
   }
 
   static defaultProps = {

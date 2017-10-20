@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView as NativeKeyboardAvoidingView,
   View,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,9 +25,9 @@ const KeyboardAvoidingView = props => (
 );
 
 KeyboardAvoidingView.propTypes = {
-  offset: React.PropTypes.number,
-  children: React.PropTypes.node,
-  styles: React.PropTypes.array,
+  offset: PropTypes.number,
+  children: PropTypes.node,
+  styles: PropTypes.array,
 };
 
 export default KeyboardAvoidingView;
