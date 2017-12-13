@@ -98,9 +98,10 @@ export default StyleSheet.create({
     fontSize: getHeightPercent(2.2),
   },
   closeButton: {
-    height: 48,
+    height: 40,
     width: getWidthPercent(15),
-    alignItems: 'center',
+    //alignItems: 'center',
+    paddingLeft: 10,
     justifyContent: 'center',
   },
   closeButtonImage: {
