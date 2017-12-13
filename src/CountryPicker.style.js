@@ -14,7 +14,7 @@ export default StyleSheet.create({
     backgroundColor: 'transparent',
   },
   header: {
-    marginTop: Platform.OS === 'ios' ? 16 : 0,
+    marginTop: Platform.OS === 'ios' ? 20 : 0,
     flexDirection: 'row',
     alignItems: 'center',
   },
